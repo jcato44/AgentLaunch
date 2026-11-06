@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10233f">
+<title>AgentLaunch — AI Agent Marketplace</title>
+<style>
+:root{--navy:#10233f;--blue:#3169e8;--ink:#17243a;--muted:#63718a;--bg:#f4f7fb;--line:#e3e9f2;--white:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--navy);color:white;padding:18px max(18px,calc((100% - 1080px)/2));display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.brand{font-size:1.35rem;font-weight:800;letter-spacing:-.5px}.brand span{color:#82a9ff}
+nav{display:flex;gap:8px;flex-wrap:wrap}button,.btn{border:0;border-radius:10px;padding:11px 15px;font-weight:700;cursor:pointer;font-size:.95rem}
+nav button{background:transparent;color:#dce7ff}nav button.active,nav button:hover{background:#263e61;color:white}
+main{max-width:1080px;margin:0 auto;padding:28px 18px 60px}
+.hero{background:linear-gradient(120deg,#10233f,#244d88);color:white;border-radius:20px;padding:30px 26px;margin-bottom:22px}
+.hero h1{font-size:clamp(2rem,7vw,3.4rem);line-height:1.04;margin:0 0 12px;letter-spacing:-1.5px}.hero p{color:#d8e5ff;max-width:600px;line-height:1.55;margin:0 0 20px}
+.primary{background:#4e80f5;color:white}.secondary{background:#eaf0ff;color:#214ca8}.small{padding:8px 11px;font-size:.85rem}
+.notice{background:#fff8e8;border:1px solid #f1dfb7;color:#715019;border-radius:12px;padding:13px 15px;margin:18px 0;font-size:.92rem;line-height:1.45}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}.stat,.panel,.agent{background:white;border:1px solid var(--line);border-radius:15px;padding:17px}.stat strong{display:block;font-size:1.55rem}.stat span,.muted{color:var(--muted);font-size:.9rem}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:25px 0 13px}.section-head h2{margin:0;font-size:1.35rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:13px}.agent h3{margin:8px 0 5px}.agent p{color:var(--muted);line-height:1.45;font-size:.93rem;min-height:42px}
+.tag{display:inline-block;background:#edf3ff;color:#2855ad;border-radius:99px;padding:5px 9px;font-size:.75rem;font-weight:700}
+.agent-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:15px}.agent-foot small{color:var(--muted)}
+.panel{max-width:650px}.field{margin:13px 0}.field label{display:block;font-weight:700;font-size:.9rem;margin-bottom:6px}.field input,.field textarea,.field select{width:100%;border:1px solid #ccd6e4;border-radius:10px;padding:12px;font:inherit;background:white}.field textarea{min-height:90px;resize:vertical}
+.hidden{display:none!important}.empty{padding:25px;text-align:center;color:var(--muted);background:white;border:1px dashed #cbd5e1;border-radius:14px}
+footer{max-width:1080px;margin:0 auto;padding:0 18px 35px;color:var(--muted);font-size:.83rem}
+@media(max-width:560px){header{padding:15px 16px}.stats{grid-template-columns:1fr}.hero{padding:25px 20px}main{padding-top:18px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Agent<span>Launch</span></div>
+  <nav aria-label="Main navigation">
+    <button class="active" data-view="home">Explore</button>
+    <button data-view="register">Register an agent</button>
+    <button data-view="dashboard">My dashboard</button>
+  </nav>
+</header>
+<main>
+  <section id="home">
+    <div class="hero">
+      <h1>Build. List. Discover.</h1>
+      <p>A simple starting place to showcase AI agents and connect the people who build them with the people who need them.</p>
+      <button class="primary" data-go="register">List your first agent</button>
+    </div>
+    <div class="notice"><strong>Early demo:</strong> This version saves listings only in this browser. It does not yet take payments, verify ownership, or track activity across devices. Those features require a secure backend and payment/partner integrations.</div>
+    <div class="stats">
+      <div class="stat"><strong id="agentCount">0</strong><span>Listed agents on this device</span></div>
+      <div class="stat"><strong>Free</strong><span>To submit a demo listing</span></div>
+      <div class="stat"><strong>Phase 1</strong><span>Marketplace prototype</span></div>
+    </div>
+    <div class="section-head"><h2>Explore AI agents</h2><span class="muted">Demo listings and your submissions</span></div>
+    <div id="agentGrid" class="grid"></div>
+  </section>
+
+  <section id="register" class="hidden">
+    <div class="section-head"><h2>Register an AI agent</h2><span class="muted">Free demo listing</span></div>
+    <div class="panel">
+      <p class="muted">Add an agent you created or are authorized to represent. Submissions appear in this browser's marketplace demo.</p>
+      <form id="agentForm">
+        <div class="field"><label for="name">Agent name</label><input id="name" required maxlength="60" placeholder="e.g. Shop Support Assistant"></div>
+        <div class="field"><label for="category">Category</label><select id="category"><option>Productivity</option><option>Customer support</option><option>Marketing</option><option>Education</option><option>Research</option><option>Other</option></select></div>
+        <div class="field"><label for="description">What does it do?</label><textarea id="description" required maxlength="300" placeholder="Describe what the agent helps people accomplish."></textarea></div>
+        <div class="field"><label for="url">Public agent link (optional)</label><input id="url" type="url" placeholder="https://..."></div>
+        <div class="field"><label for="owner">Your display name</label><input id="owner" required maxlength="60" placeholder="Your name or business"></div>
+        <button class="primary" type="submit">Submit agent listing</button>
+      </form>
+      <p id="formMessage" role="status" class="muted"></p>
+    </div>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <div class="section-head"><h2>My dashboard</h2></div>
+    <div class="notice">This is a local preview, not a real account or earnings dashboard. Listings are stored on this device only.</div>
+    <div class="panel">
+      <h3>Your submitted agents</h3>
+      <div id="myAgents"></div>
+      <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+      <h3>Revenue status</h3>
+      <p class="muted">No revenue is collected in this prototype. We will add compliant payment and affiliate tracking only after choosing partner programs and setting up a secure backend.</p>
+      <button id="exportBtn" class="secondary">Export my listings (JSON)</button>
+      <button id="clearBtn" class="secondary small">Clear local demo data</button>
+    </div>
+  </section>
+</main>
+<footer>AgentLaunch prototype · Be transparent about what each agent can do. Only list agents you own or have permission to represent.</footer>
+<script>
+const demoAgents = [
+ {id:"demo-001",name:"Meeting Notes Helper",category:"Productivity",description:"Turns meeting notes into concise summaries and action items.",owner:"AgentLaunch Demo",url:""},
+ {id:"demo-002",name:"Study Coach",category:"Education",description:"Helps learners practice topics with explanations and quizzes.",owner:"AgentLaunch Demo",url:""},
+ {id:"demo-003",name:"Customer FAQ Assistant",category:"Customer support",description:"Answers common customer questions using an approved knowledge base.",owner:"AgentLaunch Demo",url:""}
+];
+const KEY="agentlaunch_listings_v1";
+const getMine=()=>{try{return JSON.parse(localStorage.getItem(KEY)||"[]")}catch{return []}};
+const allAgents=()=>[...getMine(),...demoAgents];
+const safe=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function render(){
+ const agents=allAgents();
+ document.getElementById("agentCount").textContent=agents.length;
+ document.getElementById("agentGrid").innerHTML=agents.map(a=>`<article class="agent"><span class="tag">${safe(a.category)}</span><h3>${safe(a.name)}</h3><p>${safe(a.description)}</p><div class="agent-foot"><small>By ${safe(a.owner)}</small>${a.url?`<a class="btn secondary small" href="${safe(a.url)}" target="_blank" rel="noopener noreferrer">Visit agent ↗</a>`:"<small>Demo listing</small>"}</div></article>`).join("");
+ const mine=getMine();
+ document.getElementById("myAgents").innerHTML=mine.length?mine.map(a=>`<p><strong>${safe(a.name)}</strong> <span class="muted">· ${safe(a.category)}</span></p>`).join(""):'<p class="muted">You have not submitted any agents on this device yet.</p>';
+}
+function show(view){
+ document.querySelectorAll("main section").forEach(s=>s.classList.add("hidden"));
+ document.getElementById(view).classList.remove("hidden");
+ document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
+ render(); window.scrollTo(0,0);
+}
+document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.view)));
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.go)));
+document.getElementById("agentForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const url=document.getElementById("url").value.trim();
+ if(url && !/^https?:\/\//i.test(url)){document.getElementById("formMessage").textContent="Please enter a full http:// or https:// link.";return}
+ const item={id:"local-"+Date.now(),name:document.getElementById("name").value.trim(),category:document.getElementById("category").value,description:document.getElementById("description").value.trim(),url,owner:document.getElementById("owner").value.trim()};
+ const mine=getMine();mine.unshift(item);localStorage.setItem(KEY,JSON.stringify(mine));
+ e.target.reset();document.getElementById("formMessage").textContent="Your demo listing was saved on this device.";render();
+});
+document.getElementById("exportBtn").addEventListener("click",()=>{
+ const blob=new Blob([JSON.stringify(getMine(),null,2)],{type:"application/json"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="agentlaunch-listings.json";a.click();URL.revokeObjectURL(a.href);
+});
+document.getElementById("clearBtn").addEventListener("click",()=>{
+ if(confirm("Delete the demo listings saved in this browser?")){localStorage.removeItem(KEY);render()}
+});
+render();
+</script>
+</body>
+</html>
